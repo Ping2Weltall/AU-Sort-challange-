@@ -1,4 +1,4 @@
-# AU-Sort-challange-
+# AI-Sort-challange-
 So these day's AI are suportive but this may change in the future one way or the other. #Botmaster #Computeralex  asked some AI to compete in dort Alghorythmen.  Imagine this.
 The idea came from a pup in facebook https://www.facebook.com/share/p/15SNMgdvLd/ 
 ll Gemi i is cheating. It is faster but not really sorted. #b0561221
