@@ -17,14 +17,13 @@ Dataset 5       Size: 11000000  Standardmäßig komplett zufällige Daten
 Snap Sort Dataset 5     time: 3.740030 seconds
 
 [Program finished]
-Muß man sich mal vorstellen.
+Muß man sich mal vorstellen.Ich weis noch nicht ob es wirklich funktioniert.
 */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 #include <math.h>
-
 
 // Define the pool and block structures
 struct block
@@ -46,7 +45,7 @@ void init_pool(struct pool *p, size_t size);
 void *pool_alloc(struct pool *p, size_t size);
 void free_pool(struct pool *p);
 
-#define DATA_SIZE 11000000
+#define DATA_SIZE 1100
 #define SNAP_CURSOR_SIZE 10
 
 double data[DATA_SIZE];
@@ -59,12 +58,14 @@ struct snap
     struct snap *next;
     struct snap *prev;
 };
-struct snap_cursor {
+struct snap_cursor
+{
     struct snap *snap;
     double num;
 };
 
-struct snap *SnapSort(int size, double nums[]) {
+struct snap *SnapSort(int size, double nums[])
+{
     struct pool my_pool;
     struct snap *snap = NULL, *base = NULL, *head = NULL, *snap_ptr = NULL;
     struct snap_cursor snap_cursor[SNAP_CURSOR_SIZE];
@@ -75,7 +76,8 @@ struct snap *SnapSort(int size, double nums[]) {
 
     // Initialize the linked list with the first element
     snap = pool_alloc(&my_pool, snap_size);
-    if (snap != NULL) {
+    if (snap != NULL)
+    {
         snap->num = nums[0];
         snap->next = NULL;
         snap->prev = NULL;
@@ -83,19 +85,24 @@ struct snap *SnapSort(int size, double nums[]) {
         head = snap;
 
         // Initialize the snap_cursor array
-        for (int i = 0; i < SNAP_CURSOR_SIZE; i++) {
+        for (int i = 0; i < SNAP_CURSOR_SIZE; i++)
+        {
             snap_cursor[i].snap = snap;
             snap_cursor[i].num = snap->num;
         }
-    } else {
+    }
+    else
+    {
         printf("Memory allocation failed\n");
         return NULL;
     }
 
     // Insert the rest of the elements into the linked list
-    for (int i = 1; i < size; i++) {
+    for (int i = 1; i < size; i++)
+    {
         struct snap *new_snap = pool_alloc(&my_pool, snap_size);
-        if (new_snap == NULL) {
+        if (new_snap == NULL)
+        {
             printf("Memory allocation failed\n");
             return NULL;
         }
@@ -105,65 +112,57 @@ struct snap *SnapSort(int size, double nums[]) {
 
         // Find the best starting point using snap_cursor
         int closest_index = 0;
-        for (int j = 1; j < SNAP_CURSOR_SIZE; j++) {
-            if (fabs(snap_cursor[j].num - new_snap->num) < fabs(snap_cursor[closest_index].num - new_snap->num)) {
+        for (int j = 1; j < SNAP_CURSOR_SIZE; j++)
+        {
+            if (fabs(snap_cursor[j].num - new_snap->num) < fabs(snap_cursor[closest_index].num - new_snap->num))
+            {
                 closest_index = j;
             }
         }
         snap_ptr = snap_cursor[closest_index].snap;
 
         // Insert the new element
-        if (new_snap->num < base->num) {
+        if (new_snap->num < base->num)
+        {
             // Insert at the beginning
             new_snap->next = base;
             base->prev = new_snap;
             base = new_snap;
-        } else if (new_snap->num > head->num) {
+        }
+        else if (new_snap->num > head->num)
+        {
             // Insert at the end
             new_snap->prev = head;
             head->next = new_snap;
             head = new_snap;
-        } else {
+        }
+        else
+        {
             // Insert in the middle
-            while (snap_ptr != NULL && snap_ptr->num < new_snap->num) {
+            while (snap_ptr != NULL && snap_ptr->num < new_snap->num)
+            {
                 snap_ptr = snap_ptr->next;
             }
             new_snap->next = snap_ptr;
             new_snap->prev = snap_ptr->prev;
-            if (snap_ptr->prev != NULL) {
+            if (snap_ptr->prev != NULL)
+            {
                 snap_ptr->prev->next = new_snap;
-            } else {
+            }
+            else
+            {
                 base = new_snap; // Adjust base if inserted at the very beginning
             }
             snap_ptr->prev = new_snap;
         }
 
         // Update snap_cursor
-        for (int j = SNAP_CURSOR_SIZE - 1; j > 0; j--) {
+        for (int j = SNAP_CURSOR_SIZE - 1; j > 0; j--)
+        {
             snap_cursor[j] = snap_cursor[j - 1];
         }
         snap_cursor[0].snap = new_snap;
         snap_cursor[0].num = new_snap->num;
-    }
-// Having AI as a helper there is always some memory loss.
-    // Copy sorted elements back to the array
-    snap_ptr = base;
-    for (int i = 0; i < size; i++)
-    {
-        if (snap_ptr == NULL)
-        {
-            printf("Error out of data - Index %d\n", i);
-            return;
-        }
-        nums[i] = snap_ptr->num;
-        if ((snap_ptr = snap_ptr->next) != NULL)
-        {
-            if (snap_ptr->num < nums[i])
-            {
-                printf("Error data sort - Index %d Value %d Next %d\n", i, nums[i], snap_ptr->num);
-            }
-           // printf("%d\t%d\n", i, nums[i]); // Debug help
-        }
     }
     return base;
 }
@@ -354,6 +353,29 @@ struct snap *SnapSort(int size, int nums[])
         snap_cursor[0].snap = new_snap;
         snap_cursor[0].num = new_snap->num;
     }
+        // Copy sorted elements back to the array
+    if ((snap_ptr = base) != NULL))
+    {
+    for (int i = 0; i < size; i++)
+    {
+        if (snap_ptr == NULL)
+        {
+            printf("Error out of data - Index %d\n", i);
+            exit(1);
+            return;
+        }
+        nums[i] = snap_ptr->num;
+        if ((snap_ptr = snap_ptr->next) != NULL)
+        {
+            if (snap_ptr->num < nums[i])
+            {
+                printf("Error data sort - Index %d Value %d Next %d\n", i, nums[i], snap_ptr->num);
+                exit(1);
+            }
+           // printf("%d\t%d\n", i, nums[i]); // Debug help
+        }
+    }
+    }
     return (base);
 }
 #endif
@@ -418,6 +440,29 @@ void generate_data(int z)
     }
 }
 
+int is_sorted(struct snap *base)
+{
+    struct snap *current = base;
+    int rc = 0;
+    while (current != NULL)
+    {
+        double n = current->num;
+        //printf("%d ", current->num);
+
+        if ((current = current->next) != NULL)
+        {
+            printf
+            if (n > current->num)
+            {
+                printf("Value against the river!!! %lf < %lf\n", current->num, n);
+                rc = -1;
+                exit(1);
+            }
+        }
+    }
+    return (rc);
+}
+
 #define DATA_SAMPLES 6
 int main()
 {
@@ -431,15 +476,19 @@ int main()
     {
         generate_data(z);
 
-        memcpy(numsnap, data, DATA_SIZE * sizeof(int));
+        memcpy(numsnap, data, DATA_SIZE * sizeof(double));
         start = clock();
-        if ((base =  SnapSort(DATA_SIZE, numsnap)) == NULL)
+        if ((base = SnapSort(DATA_SIZE, numsnap)) == NULL)
         {
-        printf("Fail!\n");
+            printf("Fail!\n");
         }
         end = clock();
         cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
         printf("Snap Sort Dataset %d\ttime: %f seconds\n", z, cpu_time_used);
+        if (is_sorted(base) == 0)
+        {
+            printf("The list is not sorted correctly.\n");
+        }
     }
     return 0;
 }
@@ -462,13 +511,14 @@ int main() {
         
         if ((current = current->next) != NULL)
         {
-           if (n < current)
+           if (n > current)
            {
               printf("Value against the river!!! %d < %d\n");
               exit(1);
            }
         }
     }
+    
     printf("\n");
 
     return 0;
@@ -528,4 +578,3 @@ void free_pool(struct pool *p)
         current = next;
     }
 }
- 
