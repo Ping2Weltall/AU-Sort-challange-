@@ -145,6 +145,26 @@ struct snap *SnapSort(int size, double nums[]) {
         snap_cursor[0].snap = new_snap;
         snap_cursor[0].num = new_snap->num;
     }
+// Having AI as a helper there is always some memory loss.
+    // Copy sorted elements back to the array
+    snap_ptr = base;
+    for (int i = 0; i < size; i++)
+    {
+        if (snap_ptr == NULL)
+        {
+            printf("Error out of data - Index %d\n", i);
+            return;
+        }
+        nums[i] = snap_ptr->num;
+        if ((snap_ptr = snap_ptr->next) != NULL)
+        {
+            if (snap_ptr->num < nums[i])
+            {
+                printf("Error data sort - Index %d Value %d Next %d\n", i, nums[i], snap_ptr->num);
+            }
+           // printf("%d\t%d\n", i, nums[i]); // Debug help
+        }
+    }
     return base;
 }
 
